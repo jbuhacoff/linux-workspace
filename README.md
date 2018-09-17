@@ -25,6 +25,7 @@ To list available workspaces:
 
 To switch between the workspaces, just type:
 
+    w <workspace>
     w project1
     w project2
 
