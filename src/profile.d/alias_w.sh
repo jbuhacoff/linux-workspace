@@ -32,14 +32,12 @@ w_exec() {
             echo "no workspace selected" >&2
             return 1
         fi
-        return $?
     fi
 
     # option to reset the current shell environment (instead of restarting terminal)
     if [ "$1" == "-r" ] || [ "$1" == "--reset" ]; then
         reset
         exec env -i USER=$USER HOME=$HOME TERM=$TERM /bin/bash -l
-        return
     fi
 
     # main function of 'w' alias is to switch to the specified workspace
