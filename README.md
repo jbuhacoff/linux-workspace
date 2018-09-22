@@ -6,6 +6,8 @@ multiple workspaces. The workspaces are defined as `.env` files in the
 to switch to that workspace, which means source the content of the `.env`
 file to the current shell. 
 
+## Managing workspaces
+
 Here are some example workspace definitions:
 
 **~/.workspace/project1.env**
@@ -47,4 +49,41 @@ by a previous workspace. There is a shortcut for cleaning up the environment:
 
     w -r
     w --reset
+
+## Workspace rsync shortcut
+
+It can be helpful to have a quick command to run rsync from the current directory 
+(under a pre-defined workspace) to a remote directory (that is also pre-defined).
+
+The `wsync` command is a simple wrapper around `rsync` that does exactly that. It
+relies on variables that are set in the environment:
+
+    WORKSPACE_REMOTE_HOST (hostname or ipaddress)
+    WORKSPACE_REMOTE_USER (to use with ssh login)
+    WORKSPACE_REMOTE_PATH (remote equivalent of WORKSPACE_PATH)
+    WORKSPACE_PATH (local directory to switch into when entering workspace)
+
+Here is an example workspace definition:
+
+**~/.workspace/project3.env**
+
+    WORKSPACE_REMOTE_HOST=192.168.20.80
+    WORKSPACE_REMOTE_USER=me
+    WORKSPACE_REMOTE_PATH=workspace
+    WORKSPACE_PATH=~/Documents/Projects/Project3
+    cd $WORKSPACE_PATH
+
+The following sequence of commands illustrates how the `wsync` wrapper works:
+
+    w project3
+    mkdir -p test
+    touch test/myfile
+    ssh $WORKSPACE_REMOTE_USER@$WORKSPACE_REMOTE_HOST "mkdir -p $WORKSPACE_REMOTE_PATH"
+    cd test
+    wsync
+    ssh $WORKSPACE_REMOTE_USER@$WORKSPACE_REMOTE_HOST "ls $WORKSPACE_REMOTE_PATH/test"
+
+Expected output:
+
+    myfile
 
