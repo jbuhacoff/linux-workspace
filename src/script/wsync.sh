@@ -18,7 +18,7 @@ workspace_sync() {
 
     # sync the files to remote server.
     # example of WORKSPACE_REMOTE_SYNC_OPTS="--delete --exclude target --exclude .build"
-    rsync -e "ssh -l $WORKSPACE_REMOTE_USER" -crptvzL $WORKSPACE_REMOTE_SYNC_OPTS $PWD/ $WORKSPACE_REMOTE_HOST:$WORKSPACE_REMOTE_PATH/$rel_path/
+    rsync -e "ssh -l $WORKSPACE_REMOTE_USER" ${WORKSPACE_RSYNC_OPTS:-"-crptvzL"} $PWD/ $WORKSPACE_REMOTE_HOST:$WORKSPACE_REMOTE_PATH/$rel_path/
 }
 
 workspace_sync || exit 1
