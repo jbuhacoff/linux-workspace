@@ -14,11 +14,11 @@ workspace_sync() {
     local rel_path=$(realpath --relative-to=$WORKSPACE_PATH $PWD)
     
     # ensure same relative path exists on remote server before we sync
-    ssh $WORKSPACE_REMOTE_USER@$WORKSPACE_REMOTE_HOST "mkdir -p $WORKSPACE_REMOTE_PATH/$rel_path"
+    ssh $WORKSPACE_SSH_OPTS $WORKSPACE_REMOTE_USER@$WORKSPACE_REMOTE_HOST "mkdir -p $WORKSPACE_REMOTE_PATH/$rel_path"
 
     # sync the files to remote server.
     # example of WORKSPACE_REMOTE_SYNC_OPTS="--delete --exclude target --exclude .build"
-    rsync -e "ssh -l $WORKSPACE_REMOTE_USER" ${WORKSPACE_RSYNC_OPTS:-"-crptvzL"} $PWD/ $WORKSPACE_REMOTE_HOST:$WORKSPACE_REMOTE_PATH/$rel_path/
+    rsync -e "ssh $WORKSPACE_SSH_OPTS -l $WORKSPACE_REMOTE_USER" ${WORKSPACE_RSYNC_OPTS:-"-crptvzL"} $PWD/ $WORKSPACE_REMOTE_HOST:$WORKSPACE_REMOTE_PATH/$rel_path/
 }
 
 workspace_sync || exit 1
