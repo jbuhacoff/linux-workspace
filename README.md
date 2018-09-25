@@ -58,10 +58,12 @@ It can be helpful to have a quick command to run rsync from the current director
 The `wsync` command is a simple wrapper around `rsync` that does exactly that. It
 relies on variables that are set in the environment:
 
-    WORKSPACE_REMOTE_HOST (hostname or ipaddress)
-    WORKSPACE_REMOTE_USER (to use with ssh login)
-    WORKSPACE_REMOTE_PATH (remote equivalent of WORKSPACE_PATH)
-    WORKSPACE_PATH (local directory to switch into when entering workspace)
+    WORKSPACE_REMOTE_HOST (hostname or ipaddress; required without default)
+    WORKSPACE_REMOTE_USER (to use with ssh login; default is local username)
+    WORKSPACE_REMOTE_PATH (remote equivalent of WORKSPACE_PATH; required without default)
+    WORKSPACE_PATH (local directory to switch into when entering workspace, used to construct relative path on remote host)
+    WORKSPACE_RSYNC_OPTS (customized options for rsync; default is "-crptvzL")
+    WORKSPACE_SSH_OPTS (customized options for ssh, should NOT include "-l username"; default is none)
 
 Here is an example workspace definition:
 
@@ -70,6 +72,8 @@ Here is an example workspace definition:
     WORKSPACE_REMOTE_HOST=192.168.20.80
     WORKSPACE_REMOTE_USER=me
     WORKSPACE_REMOTE_PATH=workspace
+    WORKSPACE_SSH_OPTS="-i ~/.ssh/my_other_id_rsa"
+    WORKSPACE_RSYNC_OPTS="-crptvzL --delete"
     WORKSPACE_PATH=~/Documents/Projects/Project3
     cd $WORKSPACE_PATH
 
