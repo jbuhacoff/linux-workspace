@@ -2,9 +2,15 @@
 
 This package installs an alias `w` that makes it easy to define and use
 multiple workspaces. The workspaces are defined as `.env` files in the
-`~/.workspace` directory. Type `w <name>` (without the `.env` extension)
+`~/.workspace` directory.
+
+Type `w <name>` (without the `.env` extension)
 to switch to that workspace, which means source the content of the `.env`
 file to the current shell. 
+
+Type `w <project1> <project2> ...` to load multiple workspaces,
+in order. Definitions in workspaces mentioned later in the list will override
+definitions of the same name in workspaces mentioned earlier in the list.
 
 ## Managing workspaces
 
@@ -22,8 +28,8 @@ Here are some example workspace definitions:
 
 To list available workspaces:
 
-    w -l
     w --list
+    w -l
 
 To switch between the workspaces, just type:
 
@@ -31,24 +37,43 @@ To switch between the workspaces, just type:
     w project1
     w project2
 
+To load variables from multiple workspaces:
+
+    w <workspace1> <workspace2> ...
+    w project1 env1
+    w project1 env2
+
+If any workspaces in the list are not found, the command exits with a non-zero
+code.
+
 When you switch to a workspace, the environment variable `WORKSPACE` is
-exported with the name of the workspace.
+exported with the name of the workspace. If multiple workspaces are loaded,
+the content of `WORKSPACE` indicates all loaded workspaces, in order.
+
+If you later load additional workspaces, they will be appended to the list.
+If you reload a workspace that appears before the end of the list, it will
+be moved to the end of the list to reflect the fact that its definitions now
+override any earlier definitions of the same name.
 
 To print the environment variables exported from the current workspace:
 
-    w -p
     w --print
+    w -p
 
 To print the environment variables from any other workspace:
 
-    w -p <workspace>
     w --print <workspace>
+    w -p <workspace>
+    w -p <workspace1> <workspace2> ...
 
+If any workspaces in the list are not found, the command exits with a non-zero
+code.
+    
 Switching to a new workspace doesn't clear any environment variables set
 by a previous workspace. There is a shortcut for cleaning up the environment:
 
-    w -r
     w --reset
+    w -r
 
 ## Workspace rsync shortcut
 
