@@ -175,10 +175,8 @@ Here is an example workspace definition:
 The following sequence of commands illustrates how the `wsync` shortcut works with `wlogin`:
 
     w project3
-    mkdir -p test
-    touch test/myfile
-    wlogin mkdir -p $WORKSPACE_REMOTE_PATH
-    cd test
+    mkdir -p test && cd test
+    touch myfile
     wsync
     wlogin ls test
 
