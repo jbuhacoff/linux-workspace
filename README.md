@@ -18,13 +18,13 @@ Here are some example workspace definitions:
 
 **~/.workspace/project1.env**
 
-    REMOTE_HOST=192.168.50.50
-    cd ~/Documents/Projects/Project1
+    WORKSPACE_PATH=~/Documents/Projects/Project1
+    cd $WORKSPACE_PATH
 
 **~/.workspace/project2.env**
 
-    REMOTE_HOST=192.168.20.80
-    cd ~/Documents/Projects/Project2
+    WORKSPACE_PATH=~/Documents/Projects/Project2
+    cd $WORKSPACE_PATH
 
 To list available workspaces:
 
@@ -75,6 +75,55 @@ by a previous workspace. There is a shortcut for cleaning up the environment:
     w --reset
     w -r
 
+## Workspace login shortcut
+
+It can be helpful to have a quick command to login to a remote server that is
+associated with a specific project, or workspace. If you define a few variables
+in the workspace you can then use a single command to login to a remote server,
+and use the same command to login to a different remote server when you are
+working on a different project. 
+
+The `wlogin` command is a simple wrapper around `ssh` that uses variables that
+are set in the environment:
+
+    WORKSPACE_REMOTE_HOST (hostname or ipaddress; required without default)
+    WORKSPACE_REMOTE_USER (to use with ssh login; default is local username)
+    WORKSPACE_SSH_OPTS (customized options for ssh, should NOT include "-l username"; default is none)
+
+Here is an example of a workspace definition that specifies how to login to
+a remote server:
+
+**~/.workspace/server1.env**
+
+    WORKSPACE_REMOTE_HOST=192.168.20.80
+    WORKSPACE_REMOTE_USER=me
+    WORKSPACE_SSH_OPTS="-i ~/.ssh/id_rsa"
+
+**~/.workspace/server2.env**
+
+    WORKSPACE_REMOTE_HOST=192.168.50.50
+    WORKSPACE_REMOTE_USER=me2
+    WORKSPACE_SSH_OPTS="-i ~/.ssh/id_rsa2"
+    WORKSPACE_REMOTE_PATH="/srv/workspace"
+
+The following sequence of commands illustrates how to use the `wlogin` shortcut
+to conveniently connect to a remote server associated with a project:
+
+    w project1 server1
+    wlogin
+    ls
+    exit
+
+Any additional command line arguments are passed to `ssh`, so you can run
+commands remotely like this:
+
+    w server2
+    wlogin ls # prints content of /srv/workspace
+    
+If the remote directory does not exist, you will see an error and the current
+directory will remain the default home directory. If you provided a command,
+it will still run in the default home directory. 
+
 ## Workspace rsync shortcut
 
 It can be helpful to have a quick command to run rsync from the current directory 
@@ -90,6 +139,8 @@ relies on variables that are set in the environment:
     WORKSPACE_RSYNC_OPTS (customized options for rsync; default is "-crptvzL")
     WORKSPACE_SSH_OPTS (customized options for ssh, should NOT include "-l username"; default is none)
 
+Note that three of these are also used by `wlogin`.
+
 Here is an example workspace definition:
 
 **~/.workspace/project3.env**
@@ -97,20 +148,20 @@ Here is an example workspace definition:
     WORKSPACE_REMOTE_HOST=192.168.20.80
     WORKSPACE_REMOTE_USER=me
     WORKSPACE_REMOTE_PATH=workspace
-    WORKSPACE_SSH_OPTS="-i ~/.ssh/my_other_id_rsa"
+    WORKSPACE_SSH_OPTS="-i ~/.ssh/id_rsa"
     WORKSPACE_RSYNC_OPTS="-crptvzL --delete"
     WORKSPACE_PATH=~/Documents/Projects/Project3
     cd $WORKSPACE_PATH
 
-The following sequence of commands illustrates how the `wsync` wrapper works:
+The following sequence of commands illustrates how the `wsync` shortcut works with `wlogin`:
 
     w project3
     mkdir -p test
     touch test/myfile
-    ssh $WORKSPACE_REMOTE_USER@$WORKSPACE_REMOTE_HOST "mkdir -p $WORKSPACE_REMOTE_PATH"
+    wlogin mkdir -p $WORKSPACE_REMOTE_PATH
     cd test
     wsync
-    ssh $WORKSPACE_REMOTE_USER@$WORKSPACE_REMOTE_HOST "ls $WORKSPACE_REMOTE_PATH/test"
+    wlogin ls test
 
 Expected output:
 
