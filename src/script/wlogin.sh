@@ -12,9 +12,9 @@ workspace_login() {
     if [ -n "$WORKSPACE_REMOTE_PATH" ]; then
         if [ $# -eq 0 ]; then
             tty_opts="-t"
-            cd_opts="cd $WORKSPACE_REMOTE_PATH; \$SHELL"
+            cd_opts="mkdir -p $WORKSPACE_REMOTE_PATH && cd $WORKSPACE_REMOTE_PATH; \$SHELL"
         else
-            cd_opts="cd $WORKSPACE_REMOTE_PATH; "
+            cd_opts="mkdir -p $WORKSPACE_REMOTE_PATH && cd $WORKSPACE_REMOTE_PATH && "
         fi
     fi
     

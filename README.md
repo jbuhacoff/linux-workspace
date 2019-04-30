@@ -120,9 +120,28 @@ commands remotely like this:
     w server2
     wlogin ls # prints content of /srv/workspace
     
-If the remote directory does not exist, you will see an error and the current
-directory will remain the default home directory. If you provided a command,
-it will still run in the default home directory. 
+If the remote directory does not exist, it will be created automatically with
+`mkdir -p` before the interactive shell or the non-interactive commands are 
+executed.
+
+If the remote directory does not exist and you do not have permission to create it,
+then if you typed just `wlogin` to get an interactive shell you will see the 
+permission denied message and your current directory will be the default home
+directory, but if you specified commands after `wlogin ...`, to be safe and avoid
+executing them in an unexpected directory, you will see the permission denied message
+and the commands will not be  executed at all. In addition, the command will exit
+with a non-zero code.
+
+For example, attempting to `wlogin <command>` into a non-existent directory without
+permission to create it:
+
+    export WORKSPACE_REMOTE_PATH=/unobtainium
+    wlogin pwd
+    mkdir: cannot create directory ‘/unobtainium’: Permission denied
+
+    echo $?
+    1
+
 
 ## Workspace rsync shortcut
 
