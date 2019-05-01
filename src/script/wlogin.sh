@@ -14,11 +14,11 @@ workspace_login() {
             tty_opts="-t"
             cd_opts="mkdir -p $WORKSPACE_REMOTE_PATH && cd $WORKSPACE_REMOTE_PATH; \$SHELL"
         else
-            cd_opts="mkdir -p $WORKSPACE_REMOTE_PATH && cd $WORKSPACE_REMOTE_PATH && "
+            cd_opts="mkdir -p $WORKSPACE_REMOTE_PATH && cd $WORKSPACE_REMOTE_PATH &&"
         fi
     fi
     
-    ssh $WORKSPACE_SSH_OPTS $ssh_user_opts $tty_opts $WORKSPACE_REMOTE_HOST "$cd_opts $@"
+    ssh $WORKSPACE_SSH_OPTS $ssh_user_opts $tty_opts $WORKSPACE_REMOTE_HOST $cd_opts "$@"
 }
 
 workspace_login "$@" || exit 1
