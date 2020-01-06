@@ -12,6 +12,18 @@ Type `w <project1> <project2> ...` to load multiple workspaces,
 in order. Definitions in workspaces mentioned later in the list will override
 definitions of the same name in workspaces mentioned earlier in the list.
 
+## How to install
+
+```
+install -d /etc/profile.d
+install -m 644 src/profile.d/*.sh /etc/profile.d/
+install -d /usr/bin
+install -m 755 src/script/wlogin.sh /usr/bin/wlogin
+install -m 755 src/script/wsync.sh /usr/bin/wsync
+install -m 755 src/script/wtunnel.sh /usr/bin/wtunnel
+install -d $HOME/.workspace
+```
+
 ## Managing workspaces
 
 Here are some example workspace definitions:
